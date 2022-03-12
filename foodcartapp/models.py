@@ -189,3 +189,5 @@ class Position(models.Model):
 #     'phonenumber': '79958993733',
 #     'address': 'Sretenka 1'
 # }
+
+# {"products":[{"product":1,"quantity":1}],"firstname":"Konstantin","lastname":"Pialov","phonenumber":"79958993733","address":"Sretenka 1"}
