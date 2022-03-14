@@ -67,36 +67,11 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    order_data = request.data
-    # positions_data = order_data['products']
-    # print('===')
-    # print(positions_data)
-    serializer = OrderSerializer(data=order_data)
-
-    # serializer = ProductSerializer(data=positions_data)
-    # for position in positions_data:
-    #     serializer = PositionSerializer(data=position)
-    #     serializer.is_valid(raise_exception=True)
-
+    serializer = OrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+    serializer.save()
 
-    order = Order.objects.create (
-        address=order_data['address'],
-        first_name=order_data['first_name'],
-        last_name=order_data['last_name'],
-        phonenumber=order_data['phonenumber']
-    )
-
-    for single_product_data in order_data['products']:
-        product = Product.objects.get(pk=single_product_data['product'])
-
-        Position.objects.create (
-            order=order,
-            product=product,
-            quantity=single_product_data['quantity']
-        )
-
-    return JsonResponse({})
+    return Response(serializer.data)
 
 
 # {"products": [{"product": 1, "quantity": 1}], "first_name": "Петров", "last_name": "Петров", "phonenumber": "+79291000000", "address": "Москва"}

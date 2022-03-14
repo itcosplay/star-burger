@@ -1,8 +1,8 @@
-from turtle import position
 from rest_framework.serializers import ModelSerializer
 
 from .models import Order
 from .models import Position
+from .models import Product
 
 
 class PositionSerializer(ModelSerializer):
@@ -21,9 +21,28 @@ class OrderSerializer(ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'address',
-            'first_name',
-            'last_name',
-            'phonenumber',
-            'products'
+            'id', 'address',
+            'first_name', 'last_name',
+            'phonenumber', 'products'
         ]
+
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        order = Order.objects.create (
+            address=validated_data['address'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            phonenumber=validated_data['phonenumber']
+        )
+
+        for single_product_data in validated_data['products']:
+            product = Product.objects.get(pk=single_product_data['product'].id)
+
+            Position.objects.create (
+                order=order,
+                product=product,
+                quantity=single_product_data['quantity']
+            )
+
+        return order
