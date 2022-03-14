@@ -1,7 +1,7 @@
 from phonenumber_field.modelfields import PhoneNumberField
 
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Restaurant(models.Model):
@@ -175,6 +175,10 @@ class Position(models.Model):
     )
 
     quantity = models.IntegerField (
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(25)
+        ],
         verbose_name='количество'
     )
 

@@ -1,5 +1,3 @@
-import json
-
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework import status
@@ -10,6 +8,9 @@ from rest_framework.response import Response
 from .models import Product
 from .models import Order
 from .models import Position
+
+from .serializers import OrderSerializer
+from .serializers import PositionSerializer
 
 
 def banners_list_api(request):
@@ -67,38 +68,22 @@ def product_list_api(request):
 @api_view(['POST'])
 def register_order(request):
     order_data = request.data
+    # positions_data = order_data['products']
+    # print('===')
+    # print(positions_data)
+    serializer = OrderSerializer(data=order_data)
 
-    try:
-        products = order_data['products']
+    # serializer = ProductSerializer(data=positions_data)
+    # for position in positions_data:
+    #     serializer = PositionSerializer(data=position)
+    #     serializer.is_valid(raise_exception=True)
 
-    except Exception:
-        return Response (
-            {
-                'error': 'there is no products in order data...'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
-    if not isinstance(products, list):
-        return Response (
-            {
-                'error': 'products is not a list...'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
-        
-    if len(products) == 0:
-        return Response (
-            {
-                'error': 'products list is empty...'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    serializer.is_valid(raise_exception=True)
 
     order = Order.objects.create (
         address=order_data['address'],
-        first_name=order_data['firstname'],
-        last_name=order_data['lastname'],
+        first_name=order_data['first_name'],
+        last_name=order_data['last_name'],
         phonenumber=order_data['phonenumber']
     )
 
@@ -112,3 +97,6 @@ def register_order(request):
         )
 
     return JsonResponse({})
+
+
+# {"products": [{"product": 1, "quantity": 1}], "first_name": "Петров", "last_name": "Петров", "phonenumber": "+79291000000", "address": "Москва"}
