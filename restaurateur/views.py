@@ -95,16 +95,23 @@ def view_restaurants(request):
     })
 
 
+def get_order_data(order):
+    return {
+        'id': order.id,
+        'total_price': order.total_price,
+        'first_name': order.first_name,
+        'last_name': order.last_name,
+        'address': order.address,
+        'phonenumber': order.phonenumber
+    }
+
+
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.values (
-        'id',
-        'address',
-        'first_name',
-        'last_name',
-        'phonenumber'
-    )
+    orders = Order.objects.get_price()
 
-    context = {"order_items": list(orders)}
+    context = {
+        "order_items": [get_order_data(order) for order in orders],
+    }
 
     return render(request, template_name='order_items.html', context=context)

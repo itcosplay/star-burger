@@ -1,6 +1,7 @@
 from phonenumber_field.modelfields import PhoneNumberField
 
 from django.db import models
+from django.db.models import F, OuterRef, Subquery, Sum
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
@@ -125,6 +126,21 @@ class RestaurantMenuItem(models.Model):
         return f"{self.restaurant.name} - {self.product.name}"
 
 
+class OrderQuerySet(models.QuerySet):
+    def get_price(self):
+        orders = self
+
+        positions = Position.objects.filter (
+            order=OuterRef('pk')
+        ).get_price().values('order').annotate (
+            total_price=Sum('price')
+        ).values('total_price')
+
+        orders = orders.annotate(total_price=Subquery(positions))
+
+        return orders
+
+
 class Order(models.Model):
     address = models.CharField (
         max_length=150,
@@ -153,12 +169,23 @@ class Order(models.Model):
         through='Position'
     )
 
+    objects = OrderQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'заказ'
         verbose_name_plural = 'заказы'
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} {self.address}'
+
+
+class PositionQuerySet(models.QuerySet):
+    def get_price(self):
+        position = self.annotate (
+            price=F('product__price') * F('quantity')
+        )
+
+        return position
 
 
 class Position(models.Model):
@@ -182,16 +209,4 @@ class Position(models.Model):
         verbose_name='количество'
     )
 
-# {
-#     'products': [
-#         {
-#             'product': 1, 'quantity': 1
-#         }
-#     ],
-#     'firstname': 'Konstantin',
-#     'lastname': 'Pialov',
-#     'phonenumber': '79958993733',
-#     'address': 'Sretenka 1'
-# }
-
-# {"products":[{"product":1,"quantity":1}],"firstname":"Konstantin","lastname":"Pialov","phonenumber":"79958993733","address":"Sretenka 1"}
+    objects = PositionQuerySet.as_manager()
