@@ -78,7 +78,7 @@ def view_products(request):
         }
         orderer_availability = [availability[restaurant.id] for restaurant in restaurants]
 
-        products_with_restaurants.append(
+        products_with_restaurants.append (
             (product, orderer_availability)
         )
 
@@ -98,7 +98,7 @@ def view_restaurants(request):
 def get_order_data(order):
     return {
         'id': order.id,
-        'total_price': order.total_price,
+        'total_price': order.cost,
         'first_name': order.first_name,
         'last_name': order.last_name,
         'address': order.address,
@@ -108,7 +108,7 @@ def get_order_data(order):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.get_price()
+    orders = Order.objects.all_cost()
 
     context = {
         "order_items": [get_order_data(order) for order in orders],

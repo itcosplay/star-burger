@@ -127,18 +127,14 @@ class RestaurantMenuItem(models.Model):
 
 
 class OrderQuerySet(models.QuerySet):
-    def get_price(self):
-        orders = self
-
+    def all_cost(self):
         positions = Position.objects.filter (
             order=OuterRef('pk')
-        ).get_price().values('order').annotate (
-            total_price=Sum('price')
-        ).values('total_price')
+        ).all_cost().order_by().values('order')
 
-        orders = orders.annotate(total_price=Subquery(positions))
-
-        return orders
+        order_cost = positions.annotate(total=Sum('cost')).values('total')
+        
+        return self.annotate(cost=Subquery(order_cost))
 
 
 class Order(models.Model):
@@ -180,24 +176,22 @@ class Order(models.Model):
 
 
 class PositionQuerySet(models.QuerySet):
-    def get_price(self):
-        position = self.annotate (
-            price=F('product__price') * F('quantity')
-        )
-
-        return position
+    def all_cost(self):
+        return self.annotate(cost=F('product__price') * F('quantity'))
 
 
 class Position(models.Model):
     order = models.ForeignKey (
         Order,
         on_delete=models.CASCADE,
+        related_name='positions',
         verbose_name='заказ'
     )
 
     product = models.ForeignKey (
         Product,
         on_delete=models.CASCADE,
+        related_name='positions',
         verbose_name='товар'
     )
 
