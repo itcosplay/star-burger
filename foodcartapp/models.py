@@ -130,7 +130,7 @@ class OrderQuerySet(models.QuerySet):
     def all_cost(self):
         positions = Position.objects.filter (
             order=OuterRef('pk')
-        ).all_cost().order_by().values('order')
+        ).order_by().values('order')
 
         order_cost = positions.annotate(total=Sum('cost')).values('total')
         
@@ -175,11 +175,6 @@ class Order(models.Model):
         return f'{self.first_name} {self.last_name} {self.address}'
 
 
-class PositionQuerySet(models.QuerySet):
-    def all_cost(self):
-        return self.annotate(cost=F('product__price') * F('quantity'))
-
-
 class Position(models.Model):
     order = models.ForeignKey (
         Order,
@@ -203,4 +198,14 @@ class Position(models.Model):
         verbose_name='количество'
     )
 
-    objects = PositionQuerySet.as_manager()
+    cost = models.DecimalField (
+        max_digits=8,
+        decimal_places=2,
+        validators=[
+            MinValueValidator(0)
+        ],
+        verbose_name='стоимость позиции',
+        blank=True
+    )
+
+
