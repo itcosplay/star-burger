@@ -35,7 +35,7 @@ class OrderSerializer(ModelSerializer):
             last_name=validated_data['last_name'],
             phonenumber=validated_data['phonenumber']
         )
-
+        0/0
         for single_product_data in validated_data['products']:
             product = Product.objects.get(pk=single_product_data['product'].id)
 
