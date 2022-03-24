@@ -35,14 +35,15 @@ class OrderSerializer(ModelSerializer):
             last_name=validated_data['last_name'],
             phonenumber=validated_data['phonenumber']
         )
-        0/0
+
         for single_product_data in validated_data['products']:
             product = Product.objects.get(pk=single_product_data['product'].id)
 
             Position.objects.create (
                 order=order,
                 product=product,
-                quantity=single_product_data['quantity']
+                quantity=single_product_data['quantity'],
+                cost=product.price * single_product_data['quantity']
             )
 
         return order
