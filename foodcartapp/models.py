@@ -146,13 +146,21 @@ class Order(models.Model):
 
     STATUS_CHOICE = [
         (NEW, 'новый'),
-        (PROCESSED, 'обработан'),
+        (PROCESSED, 'обработан')
     ]
 
     address = models.CharField (
         max_length=150,
         verbose_name='адрес'
     )
+
+    CASH = 'CH'
+    CREDIT_CARD = 'CD'
+
+    PAYMENT_METHOD_CHOICE = [
+        (CASH, 'Наличностью'),
+        (CREDIT_CARD, 'Электронно')
+    ]
 
     first_name = models.CharField (
         max_length=50,
@@ -211,6 +219,16 @@ class Order(models.Model):
         db_index=True,
         verbose_name='дата доставки'
     )
+
+    payment_method = models.CharField (  
+        max_length=12,
+        choices=PAYMENT_METHOD_CHOICE,
+        default=CASH,
+        db_index=True,
+        verbose_name='способ оплаты'
+    )
+
+
 
     class Meta:
         verbose_name = 'заказ'

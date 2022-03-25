@@ -100,10 +100,12 @@ def get_order_data(order):
         'id': order.id,
         'status': order.get_status_display(),
         'total_price': order.cost,
+        'payment_method': order.payment_method,
         'first_name': order.first_name,
         'last_name': order.last_name,
         'address': order.address,
-        'phonenumber': order.phonenumber
+        'phonenumber': order.phonenumber,
+        'comment': order.comment
     }
 
 
