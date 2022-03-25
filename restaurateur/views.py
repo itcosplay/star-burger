@@ -98,6 +98,7 @@ def view_restaurants(request):
 def get_order_data(order):
     return {
         'id': order.id,
+        'status': order.get_status_display(),
         'total_price': order.cost,
         'first_name': order.first_name,
         'last_name': order.last_name,

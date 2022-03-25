@@ -54,11 +54,11 @@ class ProductCategory(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(
+    name = models.CharField (
         'название',
         max_length=50
     )
-    category = models.ForeignKey(
+    category = models.ForeignKey (
         ProductCategory,
         verbose_name='категория',
         related_name='products',
@@ -66,7 +66,7 @@ class Product(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
     )
-    price = models.DecimalField(
+    price = models.DecimalField (
         'цена',
         max_digits=8,
         decimal_places=2,
@@ -87,6 +87,8 @@ class Product(models.Model):
     )
 
     objects = ProductQuerySet.as_manager()
+
+    
 
     class Meta:
         verbose_name = 'товар'
@@ -138,6 +140,14 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
+    NEW = 'NW'
+    PROCESSED = 'PD'
+
+    STATUS_CHOICE = [
+        (NEW, 'новый'),
+        (PROCESSED, 'обработан'),
+    ]
+    
     address = models.CharField (
         max_length=150,
         verbose_name='адрес'
@@ -166,6 +176,14 @@ class Order(models.Model):
     )
 
     objects = OrderQuerySet.as_manager()
+
+    status = models.CharField (
+        max_length=12,
+        choices=STATUS_CHOICE,
+        default=NEW,
+        verbose_name='статус заказа',
+        db_index=True,
+    )
 
     class Meta:
         verbose_name = 'заказ'
