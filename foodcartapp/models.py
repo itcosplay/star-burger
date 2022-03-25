@@ -147,7 +147,7 @@ class Order(models.Model):
         (NEW, 'новый'),
         (PROCESSED, 'обработан'),
     ]
-    
+
     address = models.CharField (
         max_length=150,
         verbose_name='адрес'
@@ -183,6 +183,12 @@ class Order(models.Model):
         default=NEW,
         verbose_name='статус заказа',
         db_index=True,
+    )
+
+    comment = models.TextField (
+        default='',
+        blank=True,
+        verbose_name='комментарий'
     )
 
     class Meta:
