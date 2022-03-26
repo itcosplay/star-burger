@@ -3,10 +3,10 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
+from django.conf import settings
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-
 
 from foodcartapp.models import Order, Product, Restaurant
 
@@ -96,14 +96,16 @@ def view_restaurants(request):
 
 
 def get_order_data(order):
+
     return {
         'id': order.id,
         'status': order.get_status_display(),
         'total_price': order.cost,
-        'payment_method': order.payment_method,
+        'payment_method': order.get_payment_method_display(),
         'first_name': order.first_name,
         'last_name': order.last_name,
         'address': order.address,
+        'restaurants': order.restaurants_executors,
         'phonenumber': order.phonenumber,
         'comment': order.comment
     }
@@ -111,8 +113,33 @@ def get_order_data(order):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.all_cost()
+    orders = Order.objects.filter (
+        status=Order.NEW
+    ).all_cost()
 
+    restaurants = Restaurant.objects.all().prefetch_related('menu_items')
+
+    restaurants_with_actual_positions = []
+    for restaurant in restaurants:
+        actual_products = restaurant.menu_items.filter(availability=True)
+        actual_products_ids = [product.product.id for product in actual_products]
+        restaurants_with_actual_positions.append (
+            {
+                'restaurant_id': restaurant.id,
+                'adress': restaurant.address,
+                'actual_positions_ids': actual_products_ids
+            }
+        )
+
+    for order in orders:
+        order.restaurants_executors = []
+        order_positions = order.positions.all()
+        order_products_ids = [position.product.id for position in order_positions]
+
+        for restaurant in restaurants_with_actual_positions:
+            if set(order_products_ids).issubset(restaurant['actual_positions_ids']):
+                order.restaurants_executors.append(restaurant)
+        
     context = {
         "order_items": [get_order_data(order) for order in orders],
     }

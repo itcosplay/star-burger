@@ -1,8 +1,11 @@
 from rest_framework.serializers import ModelSerializer
 
+from geocoder.models import Coordinates
+from geocoder.utils import add_coordinates
 from .models import Order
 from .models import Position
 from .models import Product
+
 
 
 class PositionSerializer(ModelSerializer):
@@ -29,8 +32,13 @@ class OrderSerializer(ModelSerializer):
         read_only_fields = ['id']
 
     def create(self, validated_data):
+        address = validated_data['address']
+
+        if not Coordinates.objects.filter(address=address).exists():
+            add_coordinates(address)
+
         order = Order.objects.create (
-            address=validated_data['address'],
+            address=address,
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             phonenumber=validated_data['phonenumber']

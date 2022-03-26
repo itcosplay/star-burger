@@ -158,8 +158,8 @@ class Order(models.Model):
     CREDIT_CARD = 'CD'
 
     PAYMENT_METHOD_CHOICE = [
-        (CASH, 'Наличностью'),
-        (CREDIT_CARD, 'Электронно')
+        (CASH, 'наличные'),
+        (CREDIT_CARD, 'карточкой')
     ]
 
     first_name = models.CharField (
@@ -228,8 +228,6 @@ class Order(models.Model):
         verbose_name='способ оплаты'
     )
 
-
-
     class Meta:
         verbose_name = 'заказ'
         verbose_name_plural = 'заказы'
@@ -254,7 +252,7 @@ class Position(models.Model):
     )
 
     quantity = models.IntegerField (
-        validators=[
+        validators = [
             MinValueValidator(1),
             MaxValueValidator(25)
         ],
@@ -264,7 +262,7 @@ class Position(models.Model):
     cost = models.DecimalField (
         max_digits=8,
         decimal_places=2,
-        validators=[
+        validators = [
             MinValueValidator(0)
         ],
         verbose_name='стоимость позиции',
