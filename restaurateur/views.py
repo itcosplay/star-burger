@@ -1,3 +1,7 @@
+import operator
+
+from geopy import distance
+
 from django import forms
 from django.shortcuts import redirect, render
 from django.views import View
@@ -9,6 +13,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
 from foodcartapp.models import Order, Product, Restaurant
+from geocoder.models import Coordinates
 
 
 class Login(forms.Form):
@@ -96,6 +101,24 @@ def view_restaurants(request):
 
 
 def get_order_data(order):
+    order_coordinates = Coordinates.objects.get(address=order.address)
+    
+    restaurants_with_distances = []
+    for restaurant in order.restaurants_executors:
+        restaurant_coordinates = Coordinates.objects.get(address=restaurant['adress'])
+        distance_restaurant_client = distance.distance (
+            (order_coordinates.lat, order_coordinates.lon),
+            (restaurant_coordinates.lat, restaurant_coordinates.lon)
+        ).km
+
+        restaurants_with_distances.append (
+            {
+                'restaurant': restaurant['adress'],
+                'distance_to_client': distance_restaurant_client
+            }
+        )
+
+    restaurants_with_distances.sort(key=operator.itemgetter('distance_to_client'))
 
     return {
         'id': order.id,
@@ -105,7 +128,7 @@ def get_order_data(order):
         'first_name': order.first_name,
         'last_name': order.last_name,
         'address': order.address,
-        'restaurants': order.restaurants_executors,
+        'restaurants': restaurants_with_distances,
         'phonenumber': order.phonenumber,
         'comment': order.comment
     }
