@@ -5,8 +5,9 @@ from django.db import migrations
 
 def fit_position_cost(apps, schema_editor):
     Position = apps.get_model('foodcartapp', 'Position')
+    positions = Position.objects.all()
 
-    for position in Position.objects.all():
+    for position in positions.iterator():
         position.cost = position.quantity * position.product.price
         position.save()
 
