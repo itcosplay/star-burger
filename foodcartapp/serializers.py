@@ -7,7 +7,6 @@ from .models import Position
 from .models import Product
 
 
-
 class PositionSerializer(ModelSerializer):
     class Meta:
         model = Position
@@ -15,7 +14,7 @@ class PositionSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
-    products = PositionSerializer (
+    products = PositionSerializer(
         many=True,
         allow_empty=False,
         write_only=True
@@ -37,7 +36,7 @@ class OrderSerializer(ModelSerializer):
         if not Coordinates.objects.filter(address=address).exists():
             add_coordinates(address)
 
-        order = Order.objects.create (
+        order = Order.objects.create(
             address=address,
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
@@ -47,7 +46,7 @@ class OrderSerializer(ModelSerializer):
         for single_product_data in validated_data['products']:
             product = Product.objects.get(pk=single_product_data['product'].id)
 
-            Position.objects.create (
+            Position.objects.create(
                 order=order,
                 product=product,
                 quantity=single_product_data['quantity'],

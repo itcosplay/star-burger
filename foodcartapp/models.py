@@ -55,41 +55,42 @@ class ProductCategory(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField (
+    name = models.CharField(
         'название',
         max_length=50
     )
-    category = models.ForeignKey (
+
+    category = models.ForeignKey(
         ProductCategory,
         verbose_name='категория',
         related_name='products',
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.SET_NULL
     )
-    price = models.DecimalField (
+
+    price = models.DecimalField(
         'цена',
         max_digits=8,
         decimal_places=2,
         validators=[MinValueValidator(0)]
     )
-    image = models.ImageField(
-        'картинка'
-    )
+
+    image = models.ImageField('картинка')
+
     special_status = models.BooleanField(
         'спец.предложение',
         default=False,
-        db_index=True,
+        db_index=True
     )
+
     description = models.TextField(
         'описание',
         max_length=200,
-        blank=True,
+        blank=True
     )
 
     objects = ProductQuerySet.as_manager()
-
-    
 
     class Meta:
         verbose_name = 'товар'
@@ -106,12 +107,14 @@ class RestaurantMenuItem(models.Model):
         verbose_name="ресторан",
         on_delete=models.CASCADE,
     )
+
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='menu_items',
         verbose_name='продукт',
     )
+
     availability = models.BooleanField(
         'в продаже',
         default=True,
@@ -131,12 +134,12 @@ class RestaurantMenuItem(models.Model):
 
 class OrderQuerySet(models.QuerySet):
     def all_cost(self):
-        positions = Position.objects.filter (
+        positions = Position.objects.filter(
             order=OuterRef('pk')
         ).order_by().values('order')
 
         order_cost = positions.annotate(total=Sum('cost')).values('total')
-        
+
         return self.annotate(cost=Subquery(order_cost))
 
 
@@ -158,67 +161,67 @@ class Order(models.Model):
         (CREDIT_CARD, 'карточкой')
     ]
 
-    address = models.CharField (
+    address = models.CharField(
         max_length=150,
         verbose_name='адрес'
     )
 
-    first_name = models.CharField (
+    first_name = models.CharField(
         max_length=50,
         verbose_name='имя'
     )
 
-    last_name = models.CharField (
+    last_name = models.CharField(
         max_length=50,
         verbose_name='фамилия'
     )
 
-    phonenumber = PhoneNumberField (
+    phonenumber = PhoneNumberField(
         db_index=True,
         verbose_name='контактный телефон'
     )
 
-    products = models.ManyToManyField (
+    products = models.ManyToManyField(
         Product,
         related_name='orders',
         verbose_name='товары',
         through='Position'
     )
 
-    status = models.CharField (
+    status = models.CharField(
         max_length=12,
         choices=STATUS_CHOICE,
         default=NEW,
         verbose_name='статус заказа',
-        db_index=True,
+        db_index=True
     )
 
-    comment = models.TextField (
+    comment = models.TextField(
         blank=True,
         verbose_name='комментарий'
     )
 
-    registered_at = models.DateTimeField (
+    registered_at = models.DateTimeField(
         default=timezone.now,
         db_index=True,
         verbose_name='дата оформления'
     )
 
-    called_at = models.DateTimeField (
+    called_at = models.DateTimeField(
         blank=True,
         null=True,
         db_index=True,
         verbose_name='дата звонка'
     )
 
-    delivered_at = models.DateTimeField (
+    delivered_at = models.DateTimeField(
         blank=True,
         null=True,
         db_index=True,
         verbose_name='дата доставки'
     )
 
-    payment_method = models.CharField (  
+    payment_method = models.CharField(
         max_length=12,
         choices=PAYMENT_METHOD_CHOICE,
         default=CASH,
@@ -237,36 +240,34 @@ class Order(models.Model):
 
 
 class Position(models.Model):
-    order = models.ForeignKey (
+    order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
         related_name='positions',
         verbose_name='заказ'
     )
 
-    product = models.ForeignKey (
+    product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='positions',
         verbose_name='товар'
     )
 
-    quantity = models.IntegerField (
-        validators = [
+    quantity = models.IntegerField(
+        validators=[
             MinValueValidator(1),
             MaxValueValidator(25)
         ],
         verbose_name='количество'
     )
 
-    cost = models.DecimalField (
+    cost = models.DecimalField(
         max_digits=8,
         decimal_places=2,
-        validators = [
+        validators=[
             MinValueValidator(0)
         ],
         verbose_name='стоимость позиции',
         blank=True
     )
-
-

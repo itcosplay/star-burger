@@ -3,24 +3,24 @@ from django.utils import timezone
 
 
 class Coordinates(models.Model):
-    address = models.CharField (
+    address = models.CharField(
         max_length=100,
         verbose_name='адрес'
     )
 
-    lat = models.FloatField (
+    lat = models.FloatField(
         default=None,
         null=True,
         verbose_name='широта'
     )
 
-    lon = models.FloatField (
+    lon = models.FloatField(
         default=None,
         null=True,
         verbose_name='долгота'
     )
 
-    request_date = models.DateTimeField (
+    request_date = models.DateTimeField(
         default=timezone.now,
         verbose_name='дата запроса'
     )

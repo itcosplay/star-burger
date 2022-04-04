@@ -7,7 +7,6 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
-from django.conf import settings
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
@@ -79,11 +78,16 @@ def view_products(request):
 
         availability = {
             **default_availability,
-            **{item.restaurant_id: item.availability for item in product.menu_items.all()},
+            **{
+                item.restaurant_id:
+                item.availability for item in product.menu_items.all()
+            },
         }
-        orderer_availability = [availability[restaurant.id] for restaurant in restaurants]
+        orderer_availability = [
+            availability[restaurant.id] for restaurant in restaurants
+        ]
 
-        products_with_restaurants.append (
+        products_with_restaurants.append(
             (product, orderer_availability)
         )
 
@@ -102,23 +106,28 @@ def view_restaurants(request):
 
 def get_order_data(order):
     order_coordinates = Coordinates.objects.get(address=order.address)
-    
+
     restaurants_with_distances = []
     for restaurant in order.restaurants_executors:
-        restaurant_coordinates = Coordinates.objects.get(address=restaurant['adress'])
-        distance_restaurant_client = distance.distance (
+        restaurant_coordinates = Coordinates.objects.get(
+            address=restaurant['adress']
+        )
+
+        distance_restaurant_client = distance.distance(
             (order_coordinates.lat, order_coordinates.lon),
             (restaurant_coordinates.lat, restaurant_coordinates.lon)
         ).km
 
-        restaurants_with_distances.append (
+        restaurants_with_distances.append(
             {
                 'restaurant': restaurant['adress'],
                 'distance_to_client': distance_restaurant_client
             }
         )
 
-    restaurants_with_distances.sort(key=operator.itemgetter('distance_to_client'))
+    restaurants_with_distances.sort(
+        key=operator.itemgetter('distance_to_client')
+    )
 
     return {
         'id': order.id,
@@ -136,7 +145,7 @@ def get_order_data(order):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.filter (
+    orders = Order.objects.filter(
         status=Order.NEW
     ).all_cost()
 
@@ -145,8 +154,10 @@ def view_orders(request):
     restaurants_with_actual_positions = []
     for restaurant in restaurants:
         actual_products = restaurant.menu_items.filter(availability=True)
-        actual_products_ids = [product.product.id for product in actual_products]
-        restaurants_with_actual_positions.append (
+        actual_products_ids = [
+            product.product.id for product in actual_products
+        ]
+        restaurants_with_actual_positions.append(
             {
                 'restaurant_id': restaurant.id,
                 'adress': restaurant.address,
@@ -157,12 +168,16 @@ def view_orders(request):
     for order in orders:
         order.restaurants_executors = []
         order_positions = order.positions.all()
-        order_products_ids = [position.product.id for position in order_positions]
+        order_products_ids = [
+            position.product.id for position in order_positions
+        ]
 
         for restaurant in restaurants_with_actual_positions:
-            if set(order_products_ids).issubset(restaurant['actual_positions_ids']):
+            if set(order_products_ids).issubset(
+                restaurant['actual_positions_ids']
+            ):
                 order.restaurants_executors.append(restaurant)
-        
+
     context = {
         "order_items": [get_order_data(order) for order in orders],
     }
