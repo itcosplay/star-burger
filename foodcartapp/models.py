@@ -1,7 +1,7 @@
 from phonenumber_field.modelfields import PhoneNumberField
 
 from django.db import models
-from django.db.models import OuterRef, Subquery, Sum
+from django.db.models import Sum
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
@@ -134,13 +134,7 @@ class RestaurantMenuItem(models.Model):
 
 class OrderQuerySet(models.QuerySet):
     def get_total_cost(self):
-        positions = Position.objects.filter(
-            order=OuterRef('pk')
-        ).values('order')
-
-        order_cost = positions.annotate(total=Sum('cost')).values('total')
-
-        return self.annotate(cost=Subquery(order_cost))
+        return self.annotate(cost=Sum(('positions__cost')))
 
 
 class Order(models.Model):
