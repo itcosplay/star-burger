@@ -147,9 +147,8 @@ class OrderAdmin(admin.ModelAdmin):
         if not Coordinates.objects.filter(address=obj.address).exists():
             add_coordinates(obj.address)
 
-        if 'next' not in request.GET:
-            return super().response_post_save_change(request, obj)
-
-        elif url_has_allowed_host_and_scheme(request.GET['next'], None):
+        if url_has_allowed_host_and_scheme(request.GET['next'], None):
             url = iri_to_uri(request.GET['next'])
             return redirect(url)
+        else:
+            return super().response_post_save_change(request, obj)
