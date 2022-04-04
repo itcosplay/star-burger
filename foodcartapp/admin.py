@@ -153,6 +153,3 @@ class OrderAdmin(admin.ModelAdmin):
         elif url_has_allowed_host_and_scheme(request.GET['next'], None):
             url = iri_to_uri(request.GET['next'])
             return redirect(url)
-
-        else:
-            raise
