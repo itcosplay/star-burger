@@ -143,24 +143,23 @@ class OrderQuerySet(models.QuerySet):
 class Order(models.Model):
     NEW = 'NW'
     PROCESSED = 'PD'
+    CASH = 'CH'
+    CREDIT_CARD = 'CD'
 
     STATUS_CHOICE = [
         (NEW, 'новый'),
         (PROCESSED, 'обработан')
     ]
 
-    address = models.CharField (
-        max_length=150,
-        verbose_name='адрес'
-    )
-
-    CASH = 'CH'
-    CREDIT_CARD = 'CD'
-
     PAYMENT_METHOD_CHOICE = [
         (CASH, 'наличные'),
         (CREDIT_CARD, 'карточкой')
     ]
+
+    address = models.CharField (
+        max_length=150,
+        verbose_name='адрес'
+    )
 
     first_name = models.CharField (
         max_length=50,
@@ -183,8 +182,6 @@ class Order(models.Model):
         verbose_name='товары',
         through='Position'
     )
-
-    objects = OrderQuerySet.as_manager()
 
     status = models.CharField (
         max_length=12,
@@ -227,6 +224,8 @@ class Order(models.Model):
         db_index=True,
         verbose_name='способ оплаты'
     )
+
+    objects = OrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'заказ'
