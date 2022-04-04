@@ -147,7 +147,7 @@ def get_order_data(order):
 def view_orders(request):
     orders = Order.objects.filter(
         status=Order.NEW
-    ).all_cost()
+    ).get_total_cost()
 
     restaurants = Restaurant.objects.all().prefetch_related('menu_items')
 

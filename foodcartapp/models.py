@@ -133,7 +133,7 @@ class RestaurantMenuItem(models.Model):
 
 
 class OrderQuerySet(models.QuerySet):
-    def all_cost(self):
+    def get_total_cost(self):
         positions = Position.objects.filter(
             order=OuterRef('pk')
         ).order_by().values('order')
