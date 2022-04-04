@@ -143,12 +143,14 @@ class OrderQuerySet(models.QuerySet):
 class Order(models.Model):
     NEW = 'NW'
     PROCESSED = 'PD'
+    BROUGHT = 'BT'
     CASH = 'CH'
     CREDIT_CARD = 'CD'
 
     STATUS_CHOICE = [
         (NEW, 'новый'),
-        (PROCESSED, 'обработан')
+        (PROCESSED, 'обработан'),
+        (BROUGHT, 'доставлен')
     ]
 
     PAYMENT_METHOD_CHOICE = [
