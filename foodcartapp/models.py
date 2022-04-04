@@ -149,6 +149,7 @@ class Order(models.Model):
     BROUGHT = 'BT'
     CASH = 'CH'
     CREDIT_CARD = 'CD'
+    UNSPECIFIED = 'UD'
 
     STATUS_CHOICE = [
         (NEW, 'новый'),
@@ -158,7 +159,8 @@ class Order(models.Model):
 
     PAYMENT_METHOD_CHOICE = [
         (CASH, 'наличные'),
-        (CREDIT_CARD, 'карточкой')
+        (CREDIT_CARD, 'карточкой'),
+        (UNSPECIFIED, 'не указано')
     ]
 
     address = models.CharField(
@@ -224,7 +226,7 @@ class Order(models.Model):
     payment_method = models.CharField(
         max_length=12,
         choices=PAYMENT_METHOD_CHOICE,
-        default=CASH,
+        default=UNSPECIFIED,
         db_index=True,
         verbose_name='способ оплаты'
     )
