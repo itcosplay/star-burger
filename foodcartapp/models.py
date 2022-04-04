@@ -136,7 +136,7 @@ class OrderQuerySet(models.QuerySet):
     def get_total_cost(self):
         positions = Position.objects.filter(
             order=OuterRef('pk')
-        ).order_by().values('order')
+        ).values('order')
 
         order_cost = positions.annotate(total=Sum('cost')).values('total')
 
