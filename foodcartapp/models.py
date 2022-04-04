@@ -270,6 +270,5 @@ class Position(models.Model):
         validators=[
             MinValueValidator(0)
         ],
-        verbose_name='стоимость позиции',
-        blank=True
+        verbose_name='стоимость позиции'
     )
