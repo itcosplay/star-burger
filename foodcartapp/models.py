@@ -3,6 +3,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.db import models
 from django.db.models import Sum
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Prefetch
 from django.utils import timezone
 
 
@@ -135,6 +136,45 @@ class RestaurantMenuItem(models.Model):
 class OrderQuerySet(models.QuerySet):
     def get_total_cost(self):
         return self.annotate(cost=Sum(('positions__cost')))
+
+    def get_restaurants_executors(self):
+        orders = self.filter(status=Order.NEW).get_total_cost()
+        restaurants = Restaurant.objects.prefetch_related(
+            Prefetch(
+                'menu_items',
+                queryset=RestaurantMenuItem.objects.filter(availability=True),
+                to_attr="availible_products"
+            )
+        )
+
+        restaurants_with_actual_positions = []
+
+        for restaurant in restaurants:
+            actual_products_ids = [
+                product.product.id for product in restaurant.availible_products
+            ]
+            restaurants_with_actual_positions.append(
+                {
+                    'restaurant_id': restaurant.id,
+                    'adress': restaurant.address,
+                    'actual_positions_ids': actual_products_ids
+                }
+            )
+
+        for order in orders:
+            order.restaurants_executors = []
+            order_positions = order.positions.all()
+            order_products_ids = [
+                position.product.id for position in order_positions
+            ]
+
+            for restaurant in restaurants_with_actual_positions:
+                if set(order_products_ids).issubset(
+                    restaurant['actual_positions_ids']
+                ):
+                    order.restaurants_executors.append(restaurant)
+
+        return orders
 
 
 class Order(models.Model):

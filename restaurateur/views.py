@@ -145,43 +145,7 @@ def get_order_data(order):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.filter(
-        status=Order.NEW
-    ).get_total_cost()
-
-    restaurants = Restaurant.objects.prefetch_related(
-        Prefetch(
-            'menu_items',
-            queryset=RestaurantMenuItem.objects.filter(availability=True),
-            to_attr="availible_products"
-        )
-    )
-
-    restaurants_with_actual_positions = []
-    for restaurant in restaurants:
-        actual_products_ids = [
-            product.product.id for product in restaurant.availible_products
-        ]
-        restaurants_with_actual_positions.append(
-            {
-                'restaurant_id': restaurant.id,
-                'adress': restaurant.address,
-                'actual_positions_ids': actual_products_ids
-            }
-        )
-
-    for order in orders:
-        order.restaurants_executors = []
-        order_positions = order.positions.all()
-        order_products_ids = [
-            position.product.id for position in order_positions
-        ]
-
-        for restaurant in restaurants_with_actual_positions:
-            if set(order_products_ids).issubset(
-                restaurant['actual_positions_ids']
-            ):
-                order.restaurants_executors.append(restaurant)
+    orders = Order.objects.get_restaurants_executors()
 
     context = {
         "order_items": [get_order_data(order) for order in orders],
