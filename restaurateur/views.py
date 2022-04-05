@@ -7,11 +7,11 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
-
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
+from django.db.models import Prefetch
 
-from foodcartapp.models import Order, Product, Restaurant
+from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
 from geocoder.models import Coordinates
 
 
@@ -149,13 +149,18 @@ def view_orders(request):
         status=Order.NEW
     ).get_total_cost()
 
-    restaurants = Restaurant.objects.all().prefetch_related('menu_items')
+    restaurants = Restaurant.objects.prefetch_related(
+        Prefetch(
+            'menu_items',
+            queryset=RestaurantMenuItem.objects.filter(availability=True),
+            to_attr="availible_products"
+        )
+    )
 
     restaurants_with_actual_positions = []
     for restaurant in restaurants:
-        actual_products = restaurant.menu_items.filter(availability=True)
         actual_products_ids = [
-            product.product.id for product in actual_products
+            product.product.id for product in restaurant.availible_products
         ]
         restaurants_with_actual_positions.append(
             {
