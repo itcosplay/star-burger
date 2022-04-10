@@ -35,9 +35,6 @@ def add_coordinates(address):
         lon, lat = get_coordinates(address)
     except Exception:
         pass
-    print('=======')
-    print(lon)
-    print(lat)
 
     Coordinates.objects.create(address=address, lat=lat, lon=lon)
 
