@@ -9,9 +9,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from django.db.models import Prefetch
 
-from foodcartapp.models import Order, Product, Restaurant, RestaurantMenuItem
+from foodcartapp.models import Order, Product, Restaurant
 from geocoder.models import Coordinates
 
 
@@ -107,13 +106,15 @@ def view_restaurants(request):
 def get_order_data(order, coordinates):
     # order_coordinates = Coordinates.objects.get(address=order.address)
     order_address = [
-        coordinate for coordinate in coordinates if coordinate['address'] == order.address
+        coordinate for coordinate in coordinates if
+        coordinate['address'] == order.address
     ][0]
 
     restaurants_with_distances = []
     for restaurant in order.restaurants_executors:
         restaurant_address = [
-            coordinate for coordinate in coordinates if coordinate['address'] == restaurant['address']
+            coordinate for coordinate in coordinates
+            if coordinate['address'] == restaurant['address']
         ][0]
         distance_restaurant_client = distance.distance(
             (order_address['lat'], order_address['lon']),
@@ -162,7 +163,9 @@ def view_orders(request):
     ).values('address', 'lat', 'lon')
 
     context = {
-        "order_items": [get_order_data(order, all_coordinates) for order in orders],
+        "order_items": [
+            get_order_data(order, all_coordinates) for order in orders
+        ],
     }
 
     return render(request, template_name='order_items.html', context=context)

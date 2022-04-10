@@ -11,9 +11,9 @@ def get_coordinates(address):
     base_url = "https://geocode-maps.yandex.ru/1.x"
     apikey = settings.GEOCODER_API_KEY
 
-    response = requests.get (
+    response = requests.get(
         base_url,
-        params = {
+        params={
             "geocode": address,
             "apikey": apikey,
             "format": "json"
@@ -21,14 +21,15 @@ def get_coordinates(address):
     )
     response.raise_for_status()
 
-    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+    found_places = response.json(
+    )['response']['GeoObjectCollection']['featureMember']
 
     if not found_places:
         return None
 
     most_relevant_place = found_places[0]
     lon, lat = most_relevant_place['GeoObject']['Point']['pos'].split(" ")
-    
+
     return lon, lat
 
 
@@ -40,4 +41,3 @@ def add_coordinates(address):
         pass
 
     Coordinates.objects.create(address=address, lat=lat, lon=lon)
-
