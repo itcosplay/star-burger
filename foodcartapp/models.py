@@ -156,7 +156,7 @@ class OrderQuerySet(models.QuerySet):
             restaurants_with_actual_positions.append(
                 {
                     'restaurant_id': restaurant.id,
-                    'adress': restaurant.address,
+                    'address': restaurant.address,
                     'actual_positions_ids': actual_products_ids
                 }
             )

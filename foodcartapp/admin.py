@@ -150,5 +150,5 @@ class OrderAdmin(admin.ModelAdmin):
         if url_has_allowed_host_and_scheme(request.GET['next'], None):
             url = iri_to_uri(request.GET['next'])
             return redirect(url)
-        else:
-            return super().response_post_save_change(request, obj)
+        
+        return super().response_post_save_change(request, obj)

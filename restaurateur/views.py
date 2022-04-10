@@ -113,7 +113,7 @@ def get_order_data(order, coordinates):
     restaurants_with_distances = []
     for restaurant in order.restaurants_executors:
         restaurant_address = [
-            coordinate for coordinate in coordinates if coordinate['address'] == restaurant['adress']
+            coordinate for coordinate in coordinates if coordinate['address'] == restaurant['address']
         ][0]
         distance_restaurant_client = distance.distance(
             (order_address['lat'], order_address['lon']),
@@ -122,7 +122,7 @@ def get_order_data(order, coordinates):
 
         restaurants_with_distances.append(
             {
-                'restaurant': restaurant['adress'],
+                'restaurant': restaurant['address'],
                 'distance_to_client': distance_restaurant_client
             }
         )
