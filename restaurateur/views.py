@@ -104,18 +104,20 @@ def view_restaurants(request):
     })
 
 
-def get_order_data(order):
-    order_coordinates = Coordinates.objects.get(address=order.address)
+def get_order_data(order, coordinates):
+    # order_coordinates = Coordinates.objects.get(address=order.address)
+    order_address = [
+        coordinate for coordinate in coordinates if coordinate['address'] == order.address
+    ][0]
 
     restaurants_with_distances = []
     for restaurant in order.restaurants_executors:
-        restaurant_coordinates = Coordinates.objects.get(
-            address=restaurant['adress']
-        )
-
+        restaurant_address = [
+            coordinate for coordinate in coordinates if coordinate['address'] == restaurant['adress']
+        ][0]
         distance_restaurant_client = distance.distance(
-            (order_coordinates.lat, order_coordinates.lon),
-            (restaurant_coordinates.lat, restaurant_coordinates.lon)
+            (order_address['lat'], order_address['lon']),
+            (restaurant_address['lat'], restaurant_address['lon'])
         ).km
 
         restaurants_with_distances.append(
@@ -145,10 +147,22 @@ def get_order_data(order):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.get_restaurants_executors()
+    orders = Order.objects.filter(
+        status=Order.NEW
+    ).get_total_cost().get_restaurants_executors()
+
+    restaurants = Restaurant.objects.values('pk', 'address', 'name')
+    orders_addresses = [order.address for order in orders]
+    all_used_addresses = orders_addresses + [
+        restaurant['address'] for restaurant in restaurants
+    ]
+
+    all_coordinates = Coordinates.objects.filter(
+        address__in=all_used_addresses
+    ).values('address', 'lat', 'lon')
 
     context = {
-        "order_items": [get_order_data(order) for order in orders],
+        "order_items": [get_order_data(order, all_coordinates) for order in orders],
     }
 
     return render(request, template_name='order_items.html', context=context)

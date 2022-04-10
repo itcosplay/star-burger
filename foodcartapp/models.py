@@ -138,7 +138,7 @@ class OrderQuerySet(models.QuerySet):
         return self.annotate(cost=Sum(('positions__cost')))
 
     def get_restaurants_executors(self):
-        orders = self.filter(status=Order.NEW).get_total_cost()
+        orders = self.get_total_cost()
         restaurants = Restaurant.objects.prefetch_related(
             Prefetch(
                 'menu_items',
