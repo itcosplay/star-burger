@@ -147,10 +147,10 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `ENV_NAME` - имя вашей переменно окружения для rollbar
 - `DATABASE_URL` - postgres://USERNAME:PASSWORD@HOST:PORT/DBNAME
 
-server username: kosplay
-server ip: 81.163.26.6
-domen: https://pkitsme.ru/
-deploy script: /root/newburger
+### server username: kosplay  
+### server ip: 81.163.26.6  
+### domen: https://pkitsme.ru/  
+### deploy script: /root/newburger  
 
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
 
