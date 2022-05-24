@@ -1,0 +1,10 @@
+__pycache__
+.*
+db.json
+deploy_starburger.sh
+docker-compose.yml
+Dockerfile
+Dockerfile.frontend
+node_modules
+README.md
+.env

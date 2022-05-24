@@ -1,0 +1,20 @@
+FROM python:3.8
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+ENV SECRET_KEY=REPLACE_ME
+ENV GEOCODER_API_KEY=REPLACE_ME
+ENV ROLLBAR_TOKEN=REPLACE_ME
+ENV ENV_NAME=REPLACE_ME
+RUN python manage.py collectstatic --noinput
+
+EXPOSE 8000

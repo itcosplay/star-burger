@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: star-burger-db
+    # restart: always
+    volumes:
+      - star_burger_db_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=star_burger
+    env_file:
+      - ./.env.dev
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.frontend
+    container_name: star-burger-frontend
+    command: ./node_modules/.bin/parcel watch ./bundles-src/index.js --dist-dir bundles --public-url "./"
+    restart: always
+    volumes:
+      - ./bundles:/app/bundles
+      - ./:/app
+
+  backend:
+    build:
+      dockerfile: Dockerfile.backend
+    container_name: star-burger-backend
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: always
+    volumes:
+      - ./bundles:/app/bundles
+      - ./media:/app/media
+      - ./:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=star_burger
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+volumes:
+  star_burger_db_data:
