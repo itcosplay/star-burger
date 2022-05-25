@@ -1,14 +1,13 @@
-FROM node:lts
+FROM node:16
 
-RUN mkdir /app
+WORKDIR /frontend
 
-WORKDIR /app
+COPY ./package.json /frontend
+COPY ./package-lock.json /frontend
+COPY ./bundles-src /frontend/bundles-src
 
-COPY package*.json ./
+RUN npm install --dev
+RUN npm install -g parcel@2.0.0-beta.2
 
-RUN npm ci --dev
-
-COPY . .
-EXPOSE 3000
-
-CMD ["./node_modules/.bin/parcel", "build", "./bundles-src/index.js", "--dist-dir", "./bundles", "--public-url", "./"]
+CMD parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
+# CMD parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
