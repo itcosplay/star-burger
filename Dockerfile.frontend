@@ -1,13 +1,12 @@
-FROM node:16
+FROM node:latest
+ENV NODE_ENV=development
 
-WORKDIR /frontend
+WORKDIR /code/
+COPY package.json /code/
+COPY package-lock.json /code/
 
-COPY ./package.json /frontend
-COPY ./package-lock.json /frontend
-COPY ./bundles-src /frontend/bundles-src
+RUN npm install -g npm && npm install --dev && npm install -g parcel-bundler
 
-RUN npm install --dev
-RUN npm install -g parcel@2.0.0-beta.2
+COPY . /code/
 
-CMD parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
-# CMD parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
+CMD parcel build bundles-src/index.js -d bundles --public-url='./'

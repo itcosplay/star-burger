@@ -1,10 +1,4 @@
-__pycache__
-.*
-db.json
-deploy_starburger.sh
-docker-compose.yml
+node_modules/
+.parcel-cache/
+bundles/
 Dockerfile
-Dockerfile.frontend
-node_modules
-README.md
-.env

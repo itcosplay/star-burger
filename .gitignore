@@ -148,3 +148,4 @@ cython_debug/
 
 .env.dev
 .env.prod
+db_data/
