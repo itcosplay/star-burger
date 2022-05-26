@@ -27,14 +27,14 @@ services:
     build:
       dockerfile: Dockerfile.backend
     container_name: star-burger-backend
-    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput && gunicorn star_burger.wsgi:application --bind 0.0.0.0:8000"
+    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput && gunicorn star_burger.wsgi:application --bind 0.0.0.0:8081"
     restart: always
     volumes:
       - ./bundles:/code/bundles
       - ./media:/code/media
       - ./:/code
     ports:
-      - "8000:8000"
+      - "8081:8081"
     env_file:
       - ./.env
     depends_on:
@@ -43,7 +43,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 8080:80
+      - 80:80
     volumes:
       - ./static:/opt/static
       - ./media:/opt/media
