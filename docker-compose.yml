@@ -19,9 +19,9 @@ services:
     build:
       dockerfile: Dockerfile.frontend
     container_name: star-burger-frontend
-    command: bash -c "parcel watch bundles-src/index.js -d bundles --public-url='./'"
+    command: ./node_modules/.bin/parcel watch ./bundles-src/index.js --dist-dir bundles --public-url "./"
     volumes:
-      - ./bundles:/frontend/bundles
+      - ./bundles:/opt/frontend/bundles
 
   backend:
     build:

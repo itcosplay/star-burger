@@ -1,11 +1,12 @@
-FROM node:lts
+FROM --platform=linux/amd64 node:lts
 
-WORKDIR /frontend
-COPY ./package.json /frontend
-COPY ./package-lock.json /frontend
+WORKDIR /opt/frontend
 
-RUN npm install -g npm && npm install --dev && npm install -g parcel-bundler
+COPY package.json /opt/frontend/package.json
+COPY package-lock.json /opt/frontend/package-lock.json
 
-COPY . /frontend
+RUN npm ci --dev
 
-CMD parcel build bundles-src/index.js -d bundles --public-url='./'
+COPY /bundles-src /opt/frontend/bundles-src
+
+# CMD ["./node_modules/.bin/parcel", "watch", "./bundles-src/index.js", "--dist-dir", "./bundles", "--public-url", "./"]
