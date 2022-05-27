@@ -22,20 +22,21 @@ services:
     command: ./node_modules/.bin/parcel watch ./bundles-src/index.js --dist-dir bundles --public-url "./"
     volumes:
       - ./bundles:/opt/frontend/bundles
+      - ./bundles-src:/opt/frontend/bundles-src
+    ports:
+      - "1234:1234"
 
   backend:
+    depends_on:
+      - db
     build:
       dockerfile: Dockerfile.backend
     container_name: star-burger-backend
-    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput && python manage.py runserver 0:8000"
+    command: bash -c "python /opt/django/manage.py migrate --noinput && python /opt/django/manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
     restart: always
     volumes:
-      - ./bundles:/code/bundles
-      - ./media:/code/media
-      - ./:/code
+      - ./:/opt/django
     ports:
       - "8000:8000"
     env_file:
       - ./.env
-    depends_on:
-      - db
