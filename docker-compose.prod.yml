@@ -19,26 +19,29 @@ services:
     build:
       dockerfile: Dockerfile.frontend
     container_name: star-burger-frontend
-    command: bash -c "parcel watch bundles-src/index.js -d bundles --public-url='./'"
+    command: ./node_modules/.bin/parcel build ./bundles-src/index.js --dist-dir bundles --public-url "./"
     volumes:
-      - ./bundles:/frontend/bundles
+      - ./bundles:/opt/frontend/bundles
+      - ./bundles-src:/opt/frontend/bundles-src
+    ports:
+      - "1234:1234"
 
   backend:
+    depends_on:
+      - db
     build:
       dockerfile: Dockerfile.backend
     container_name: star-burger-backend
-    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py collectstatic --noinput && gunicorn star_burger.wsgi:application --bind 0.0.0.0:8081"
+    command: bash -c "python /opt/django/manage.py migrate --noinput && python /opt/django/manage.py collectstatic --noinput && gunicorn star_burger.wsgi:application --bind 0.0.0.0:8000"
     restart: always
     volumes:
-      - ./bundles:/code/bundles
-      - ./media:/code/media
-      - ./:/code
+      - ./:/opt/django
     ports:
-      - "8081:8081"
+      - "8000:8000"
+    environment:
+      - DEBUG=False
     env_file:
       - ./.env
-    depends_on:
-      - db
 
   nginx:
     build: ./nginx
