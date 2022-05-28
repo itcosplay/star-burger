@@ -152,6 +152,40 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 ### domen: https://pkitsme.ru/  
 ### deploy script: /root/newburger  
 
+
+# DOCKER
+Docker и docker-compose должны быть предварительно установлены.  
+Необходимые пременные окружения:
+`GEOCODER_API_KEY=your-api-key`  
+`ROLLBAR_TOKEN=your-token`  
+`ENV_NAME=your-env-name`  
+`DATABASE_URL=postgres://postgres:postgres@db:5432/star_burger`  
+`POSTGRES_DB=star_burger`  
+`POSTGRES_USER=postgres`  
+`POSTGRES_PASSWORD=postgres`  
+Параметры для БД можно указать свои при наличии желании. `DATABASE_URL` задается для Django, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` - задаются для докер контейнера с postgres.
+Все переменные окружения сохраняем в .env в корне проекта.
+## dev mode
+* Собираем контейнеры  
+```docker compose build```
+* Запускаем проект  
+```docker compose up -d```  
+Caйт работает на http://localhost:8000
+
+## prodaction mode
+* На сервере клонируем репозиторий в папку /opt
+* В папку /opt/star-burger добавляем .env c необходимыми переменными
+* Устанавливаем права на запуск деплойного скрипта  
+```chmod +x newburger.sh```  
+* Запускаем скрипт  
+```./ newburger.sh```  
+* По окончании деплоя сайт работает по ip адресу сервера.
+* SSL и домен настраиваются дополнительно вручную
+
+### server username: dockertest  
+### server ip: 81.163.30.48 
+### ssh проверяющего добавлен
+
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
 
 Где используется репозиторий:
