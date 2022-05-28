@@ -5,6 +5,8 @@ volumes:
 
 services:
   db:
+    depends_on:
+      - frontend
     image: postgres
     container_name: star-burger-db
     restart: always
@@ -44,6 +46,8 @@ services:
       - ./.env
 
   nginx:
+    depends_on:
+      - backend
     build: ./nginx
     container_name: star-burger-nginx
     ports:
@@ -51,5 +55,4 @@ services:
     volumes:
       - ./static:/opt/static
       - ./media:/opt/media
-    depends_on:
-      - backend
+    
