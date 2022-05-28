@@ -45,6 +45,7 @@ services:
 
   nginx:
     build: ./nginx
+    container_name: star-burger-nginx
     ports:
       - 80:80
     volumes:
