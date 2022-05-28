@@ -5,8 +5,6 @@ volumes:
 
 services:
   db:
-    depends_on:
-      - frontend
     image: postgres
     container_name: star-burger-db
     restart: always
@@ -17,16 +15,16 @@ services:
     env_file:
       - ./.env
 
-  frontend:
-    build:
-      dockerfile: Dockerfile.frontend
-    container_name: star-burger-frontend
-    command: ./node_modules/.bin/parcel build ./bundles-src/index.js --dist-dir bundles --public-url "./"
-    volumes:
-      - ./bundles:/opt/frontend/bundles
-      - ./bundles-src:/opt/frontend/bundles-src
-    ports:
-      - "1234:1234"
+  # frontend:
+  #   build:
+  #     dockerfile: Dockerfile.frontend
+  #   container_name: star-burger-frontend
+  #   command: ./node_modules/.bin/parcel build ./bundles-src/index.js --dist-dir bundles --public-url "./"
+  #   volumes:
+  #     - ./bundles:/opt/frontend/bundles
+  #     - ./bundles-src:/opt/frontend/bundles-src
+  #   ports:
+  #     - "1234:1234"
 
   backend:
     depends_on:
