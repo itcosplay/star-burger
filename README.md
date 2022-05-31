@@ -131,7 +131,6 @@ Parcel будет следить за файлами в каталоге `bundle
 
 
 ## Как запустить prod-версию сайта
-
 Собрать фронтенд:
 
 ```sh
@@ -147,10 +146,13 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `ENV_NAME` - имя вашей переменной окружения для rollbar
 - `DATABASE_URL` - postgres://USERNAME:PASSWORD@HOST:PORT/DBNAME
 
-### server username: kosplay  
-### server ip: 81.163.26.6  
-### domen: https://pkitsme.ru/  
-### deploy script: /root/newburger  
+
+# Данные сервера
+server username: kosplay  
+server ip: 81.163.26.6  
+domen: https://pkitsme.ru/  
+deploy script: /root/newburger  
+ssh проверяющего добавлен
 
 
 # DOCKER
@@ -165,12 +167,15 @@ Docker и docker-compose должны быть предварительно ус
 `POSTGRES_PASSWORD=postgres`  
 Параметры для БД можно указать свои при наличии желании. `DATABASE_URL` задается для Django, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` - задаются для докер контейнера с postgres.
 Все переменные окружения сохраняем в .env в корне проекта.
+
+
 ## dev mode
 * Собираем контейнеры  
 ```docker compose build```
 * Запускаем проект  
 ```docker compose up -d```  
 Caйт работает на http://localhost:8000
+
 
 ## production mode
 * На сервере клонируем репозиторий в папку /opt
@@ -182,12 +187,15 @@ Caйт работает на http://localhost:8000
 * По окончании деплоя сайт работает по ip адресу сервера.
 * SSL и домен настраиваются дополнительно вручную
 
-### server username: dockertest  
-### server ip: 81.163.30.48 
-### ssh проверяющего добавлен
+
+# Данные сервера для Docker
+username: dockertest  
+server ip: 81.163.30.48 
+ssh проверяющего добавлен
+
 
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
 
-Где используется репозиторий:
 
+Где используется репозиторий:
 - Второй и третий урок [учебного модуля Django](https://dvmn.org/modules/django/)
