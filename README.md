@@ -144,7 +144,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `GEOCODER_API_KEY` - [ключ API Яндекс-геокодера](https://dvmn.org/encyclopedia/api-docs/yandex-geocoder-api/)
-- `ENV_NAME` - имя вашей переменно окружения для rollbar
+- `ENV_NAME` - имя вашей переменной окружения для rollbar
 - `DATABASE_URL` - postgres://USERNAME:PASSWORD@HOST:PORT/DBNAME
 
 ### server username: kosplay  
@@ -155,7 +155,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 
 # DOCKER
 Docker и docker-compose должны быть предварительно установлены.  
-Необходимые пременные окружения:
+Необходимые переменные окружения:
 `GEOCODER_API_KEY=your-api-key`  
 `ROLLBAR_TOKEN=your-token`  
 `ENV_NAME=your-env-name`  
@@ -172,10 +172,10 @@ Docker и docker-compose должны быть предварительно ус
 ```docker compose up -d```  
 Caйт работает на http://localhost:8000
 
-## prodaction mode
+## production mode
 * На сервере клонируем репозиторий в папку /opt
 * В папку /opt/star-burger добавляем .env c необходимыми переменными
-* Устанавливаем права на запуск деплойного скрипта  
+* * Устанавливаем права на запуск деплойного скрипта  
 ```chmod +x newburger.sh```  
 * Запускаем скрипт  
 ```./ newburger.sh```  
