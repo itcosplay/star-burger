@@ -1,15 +1,23 @@
 #!/bin/bash
 set -e
-
-cd /opt/star-burger
-docker build -t star-burger-frontend -f Dockerfile.frontend .
-docker run --rm -v $(pwd)/bundles:/opt/frontend/bundles star-burger-frontend
-
-
-docker compose -f docker-compose.prod.yml down
+cd /opt/projects/star-burger/
+source venv/bin/activate
 git fetch
 git pull
-docker compose -f docker-compose.prod.yml build
-docker compose -f docker-compose.prod.yml up -d
-
-echo star-burged was updated and it will work soon!
+python3 -m pip install --upgrade pip
+pip install -r requirements.txt
+echo 'node version:'
+node --version
+echo 'npm version:'
+npm --version
+npm install --dev
+sudo npm install -g parcel@2.0.0-beta.2
+echo 'parcel version:'
+parcel --version
+parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
+rm -r static
+python manage.py collectstatic
+python manage.py migrate
+systemctl restart star-burger.service
+echo 'star-burger was updated successfully!'
+python deploynotify.py
