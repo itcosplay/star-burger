@@ -13,6 +13,31 @@
 
 Третий интерфейс — это админка. Преимущественно им пользуются программисты при разработке сайта. Также сюда заходит менеджер, чтобы обновить меню ресторанов Star Burger.
 
+# Необходимые переменные окружения для сайта
+В корне проекта создайте файл `.env` с нижеуказанными переменными  
+`DEBUG=True/False`  
+
+`GEOCODER_API_KEY=your-api-key`  
+
+`ALLOWED_HOSTS=your-hosts-list`  
+
+`SECRET_KEY=your-secret-key`  
+
+`DATABASE_URL=postgres://postgres:postgres@db:5432/star_burger`  
+
+`ROLLBAR_TOKEN=your-token` - ваш токен [rollbar](https://rollbar.com/)
+
+`CURRENT_ENVIRONMENT_NAME=your-env-name` - название окружения в котором разворачивается сайт. Например: `production`, `stage`, `development` и т.д.  
+
+`POSTGRES_DB=star_burger`  
+
+`POSTGRES_USER=postgres`  
+
+`POSTGRES_PASSWORD=postgres`  
+
+Параметры для БД можно указать свои при наличии желании. `DATABASE_URL` задается для Django, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` - задаются для докер контейнера с postgres.
+Все переменные окружения сохраняем в .env в корне проекта.
+
 ## Как запустить dev-версию сайта
 
 Для запуска сайта нужно запустить **одновременно** бэкенд и фронтенд, в двух терминалах.
@@ -137,15 +162,6 @@ Parcel будет следить за файлами в каталоге `bundle
 parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 ```
 
-Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
-
-- `DEBUG` — дебаг-режим. Поставьте `False`.
-- `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
-- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
-- `GEOCODER_API_KEY` - [ключ API Яндекс-геокодера](https://dvmn.org/encyclopedia/api-docs/yandex-geocoder-api/)
-- `ENV_NAME` - имя вашей переменной окружения для rollbar
-- `DATABASE_URL` - postgres://USERNAME:PASSWORD@HOST:PORT/DBNAME
-
 
 # Данные сервера
 server username: kosplay  
@@ -157,16 +173,7 @@ ssh проверяющего добавлен
 
 # DOCKER
 Docker и docker-compose должны быть предварительно установлены.  
-Необходимые переменные окружения:
-`GEOCODER_API_KEY=your-api-key`  
-`ROLLBAR_TOKEN=your-token`  
-`ENV_NAME=your-env-name`  
-`DATABASE_URL=postgres://postgres:postgres@db:5432/star_burger`  
-`POSTGRES_DB=star_burger`  
-`POSTGRES_USER=postgres`  
-`POSTGRES_PASSWORD=postgres`  
-Параметры для БД можно указать свои при наличии желании. `DATABASE_URL` задается для Django, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` - задаются для докер контейнера с postgres.
-Все переменные окружения сохраняем в .env в корне проекта.
+Необходимые переменные окружения:  
 
 
 ## dev mode
