@@ -11,14 +11,13 @@ env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = env.bool('DEBUG', True)
+DEBUG = env.bool('DEBUG', False)
+
 GEOCODER_API_KEY = env.str('GEOCODER_API_KEY')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['*'])
 
-SECRET_KEY = env('SECRET_KEY', 'my-secret-key')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-
-
+SECRET_KEY = env('SECRET_KEY')
 
 INSTALLED_APPS = [
     'foodcartapp.apps.FoodcartappConfig',
@@ -85,11 +84,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'star_burger.wsgi.application'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
 
-# DATABASES = {
-#     'default': dj_database_url.config(conn_max_age=None)
-# }
+MEDIA_URL = '/media/'
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -130,7 +126,6 @@ INTERNAL_IPS = [
     '127.0.0.1'
 ]
 
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
     os.path.join(BASE_DIR, "bundles"),
@@ -138,7 +133,7 @@ STATICFILES_DIRS = [
 
 ROLLBAR = {
     'access_token': env.str('ROLLBAR_TOKEN'),
-    'environment': env.str('ENV_NAME'),
+    'environment': env.str('CURRENT_ENVIRONMENT_NAME'),
     'root': BASE_DIR,
 }
 
